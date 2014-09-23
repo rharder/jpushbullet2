@@ -1,5 +1,4 @@
-jpushbullet2
-============
+jPushbullet2 Read Me
 
 http://iharder.net/jpushbullet2
 
@@ -16,7 +15,24 @@ jPushbullet2	Future Plans
 /v2/upload-request	Yes	
 /v2/oauth2	No	None
 websocket	Yes	
+View the jPushbullet2 javadoc API online, if you like.
 
+This jPushbullet2 library uses a few other libraries, which you will need to add to your classpath/project:
+
+Google Gson (for converting json text)
+Apache HTTPComponents (for communication with Pushbullet)
+javax.websocket (Tyrus a reference implementation)
+So for instance my lib folder has the following files:
+
+commons-codec-1.6.jar
+commons-logging-1.1.3.jar
+fluent-hc-4.3.4.jar
+gson-2.2.4.jar
+httpclient-4.3.4.jar
+httpclient-cache-4.3.4.jar
+httpcore-4.3.2.jar
+httpmime-4.3.4.jar
+tyrus-standalone-client-1.7.jar
 Examples
 
 The quickest way to understand the library is to see some examples. These examples and more are included in the source code. For security reasons, the examples are not included in the binary distribution jar file.
