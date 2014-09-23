@@ -1,0 +1,185 @@
+<html>
+<head>
+<title>jPushbullet2 Read Me</title>
+
+  <style type="text/css">
+<!--
+body { font-family:  Verdana; }
+#apisupporttable { font-size: smaller; margin: 1em auto 1em auto; border-collapse: collapse; border-top: 2px solid black; border-bottom: 2px solid black; }
+#apisupporttable th { cell-spacing: 1em; padding: 0.05em 1em 0.05em 1em; border-bottom: 1px solid black; }
+#apisupporttable tr.supported:hover { background-color: #CEC; }
+#apisupporttable tr.notsupported td{ color: #AAA; }
+#apisupporttable tr.notsupported:hover{ background-color: #ECC; }
+#apisupporttable td { cell-spacing: 1em; padding: 0.05em 1em 0.05em 1em; }
+#apisupporttable th { text-align: center; }
+#apisupporttable tr td:first-child + td { text-align: center; }
+.depslist { font-size: smaller; margin-left: 4em; }
+.depslist li {  margin: 0.2em}
+-->
+</style>        
+
+</head>
+<body>
+
+<h1>jPushbullet2 Read Me</h1>
+<p><a href="http://iharder.net/jpushbullet2">http://iharder.net/jpushbullet2</a></p>
+<!-- BEGIN README -->
+
+        <p>
+          This is a <strong>Public Domain</strong> Java library for 
+          interacting with the <a href="http://www.pushbullet.com">Pushbullet</a>
+          service. It supports both sending and receiving notifications. 
+          Thanks to <a href="https://github.com/shakethat/jpushbullet">shakethat at github</a>
+          for the insights from his library, which was made for an earlier set of Pushbullet APIs.
+        </p>
+        
+
+        <p>The <a href="https://docs.pushbullet.com/http/">Pushbullet HTTP API</a> identifies 
+        seven capabilities, of which jPushbullet2 supports five:</p>
+
+ 
+        <table id="apisupporttable">
+         <thead><tr><th>Pushbullet API</th><th>Supported in <br />jPushbullet2</th><th>Future Plans</th></tr></thead>
+         <tbody>
+             <tr class="supported"><td><a href="https://docs.pushbullet.com/v2/pushes">/v2/pushes</a></td><td>Yes</td><td></td></tr>
+             <tr class="supported"><td><a href="https://docs.pushbullet.com/v2/devices">/v2/devices</a></td><td>Yes</td><td></td></tr>
+             <tr class="notsupported"><td><a href="https://docs.pushbullet.com/v2/contacts">/v2/contacts</a></td><td>No</td><td>Will explore this later</td></tr>
+             <tr class="supported"><td><a href="https://docs.pushbullet.com/v2/users/me">/v2/users/me</a></td><td>Yes</td><td></td></tr>
+             <tr class="supported"><td><a href="https://docs.pushbullet.com/v2/upload-request">/v2/upload-request</a></td><td>Yes</td><td></td></tr>
+             <tr class="notsupported"><td><a href="https://docs.pushbullet.com/v2/oauth2">/v2/oauth2</a></td><td>No</td><td>None</td></tr>
+             <tr class="supported"><td><a href="https://docs.pushbullet.com/stream">websocket</a></td><td>Yes</td><td></td></tr>
+         </tbody>
+         </table>
+        
+        
+        
+        <p>View the <a href="api/index.html">jPushbullet2 javadoc API</a> online, if you like.</p>
+        
+        
+        
+        <p>This jPushbullet2 library uses a few other libraries, 
+        which you will need to add to your classpath/project:</p>
+        <ul class="depslist">
+            <li><a href="https://code.google.com/p/google-gson/">Google Gson</a> (for converting json text)</li>
+            <li><a href="http://hc.apache.org/">Apache HTTPComponents</a> (for communication with Pushbullet)</li>
+            <li><a href="https://java.net/projects/websocket-spec">javax.websocket</a> (<a href="https://tyrus.java.net/">Tyrus</a> a reference implementation)</li>
+        </ul>
+        
+        <p>So for instance my <tt>lib</tt> folder has the following files:</p>
+        <ul class="depslist">
+            <li>commons-codec-1.6.jar</li>
+            <li>commons-logging-1.1.3.jar</li>
+            <li>fluent-hc-4.3.4.jar</li>
+            <li>gson-2.2.4.jar</li>
+            <li>httpclient-4.3.4.jar</li>
+            <li>httpclient-cache-4.3.4.jar</li>
+            <li>httpcore-4.3.2.jar</li>
+            <li>httpmime-4.3.4.jar</li>
+            <li>tyrus-standalone-client-1.7.jar</li>
+        </ul>
+        
+
+<h2>Examples</h2>
+
+<p>The quickest way to understand the library is to see some examples. These examples and more 
+are included in the source code. For security reasons, the examples are not included in the
+binary distribution jar file.</p>
+
+<p>To send a note:</p>
+
+<code><pre class="prettyprint">
+public class SendNote {
+    public static void main(String[] args) throws PushbulletException{
+        PushbulletClient client = new PushbulletClient( "ABCD1034...your.key.here...ABCD" );
+        String result = client.sendNote(null, "My First Push", "Great library. All my devices can see this!");
+        System.out.println( "Result: " + result );
+    }   // end main
+}   // end Note
+</pre></code>
+
+
+<p>To retrieve, on another thread, all pushes ever sent with this Pushbullet account:</p>
+
+<code><pre class="prettyprint">
+public class GetPushesAsync {
+    public static void main(String[] args) throws PushbulletException, InterruptedException{
+        PushbulletClient client = new PushbulletClient( "ABCD1034...your.key.here...ABCD" );
+        Future fut = client.getPushesAsync(new Callback&lt;List&lt;Push&gt;&gt;() {
+            @Override
+            public void completed(List<Push> pushes, PushbulletException ex) {
+                System.out.println( "Number of pushes: " + pushes.size() );
+                System.out.println("Destination\ttype");
+                for( Push push : pushes ){
+                    System.out.println( 
+                            push.getTarget_device_iden()+ "\t" + 
+                            push.getType() );
+                }
+            }
+        });
+        Thread.sleep(1000);
+        System.out.println("1 sec has passed. Done yet? " + fut.isDone() );
+        Thread.sleep(10000);
+    }   // end main
+}   // end GetPushesAsync
+</pre></code>
+
+
+<p>To listen for new incoming pushes and other changes to your Pushbullet account:</p>
+
+<code><pre class="prettyprint">
+public class StartStopWebservice {
+    public static void main(String[] args) throws PushbulletException, InterruptedException{
+        if( args.length &lt; 1 ){
+            System.out.println("Arguments: API_KEY ");
+        } else {
+            PushbulletClient client = new PushbulletClient( args[0] );
+            client.addPushbulletListener(new PushbulletListener(){
+
+                @Override
+                public void pushReceived(PushbulletEvent pushEvent) {
+                    System.out.println("pushReceived PushEvent received: " + pushEvent);
+                }
+
+                @Override
+                public void devicesChanged(PushbulletEvent pushEvent) {
+                    System.out.println("devicesChanged PushEvent received: " + pushEvent);
+                }
+            });
+            
+            System.out.println("Getting previous pushes to find most recent...");
+            client.getPushes();
+            System.out.println("Starting websocket...try sending a push now.");
+            client.startWebsocket();
+            
+            // Wait 30 seconds
+            for( int i = 30; i >= 0; i-- ){
+                System.out.print(" " + i + " ");
+                Thread.sleep(1000);
+            }
+            System.out.println("Stopping websocket");
+            client.stopWebsocket();
+        }
+    }   // end main
+}   // end StartStopWebservice
+</pre></code>
+
+
+
+<h2>A Note About Public Domain</h2>
+<p>I have released this software into the Public Domain. That means you can do whatever you want with it. Really. You don't have to match it up with any other open source license &em; just use it. You can rename the files, move the Java packages, whatever you want. If your lawyers say you have to have a license, contact me, and I'll make a special release to you under whatever reasonable license you desire: MIT, BSD, GPL, whatever.</p>
+
+
+<h2>Changes</h2>
+
+<ul>
+ <li>v0.2 - Adding paging capability. Changed Push sorting to be newest first
+   in keeping with Pushbullet.com practice. Cleaned up some dependencies.</li>
+ <li>v0.1 - Initial Release
+</ul>
+
+<!--  END README -->
+
+
+
+</body>
+</html>

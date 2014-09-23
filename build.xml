@@ -1,0 +1,91 @@
+<project name="jPushbullet2" basedir="." default="main">
+    <property name="src.dir"      value="src" />
+    <property name="lib.dir"      value="lib" />
+    <property name="build.dir"    value="build" />
+    <property name="classes.dir"  value="${build.dir}/classes" />
+    <property name="api.dir"      value="${build.dir}/api" />
+    <property name="readme.file"  value="ReadMe.html" />
+    <property name="deploy.base.dir"    value="${ant.project.name}-v" /><!-- Add version number later -->
+    <property name="jar.base.filename"      value="${ant.project.name}-v"/><!-- Add version number later -->
+    
+    <path id="external.jars">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+    <path id="project.classpath">
+        <pathelement location="${src.dir}"/>
+        <path refid="external.jars" />
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="project.classpath" />
+    </target>
+    
+    <target name="api">
+        <mkdir dir="${api.dir}" />
+        <javadoc 
+          sourcepath="${src.dir}"
+          packagenames="net.iharder.jpushbullet2"
+          classpathref="project.classpath"
+          destdir="${api.dir}"
+          Version="yes" 
+          Author="yes" 
+          Windowtitle="jPushbullet2: A Java Pushbullet Client Library" >
+        </javadoc>
+    </target>
+
+    <target name="deps">
+        <pathconvert pathsep="${line.separator}" property="expanded.main.class.path" refid="external.jars" >
+            <map from="${basedir}${file.separator}" to=""/>
+            <map from="${lib.dir}${path.separator}" to=""/>
+        </pathconvert>
+        <echo message="Libraries used at compile time" file="${deploy.dir}/libs-at-compile-time.txt"/>
+        <echo message="${expanded.main.class.path}" file="${deploy.dir}/libs-at-compile-time.txt"/>
+    </target>
+    
+    <target name="deploy" depends="compile,api">
+        <input message="Enter version for this release (ex: 0.1): " addproperty="rel.ver" />
+        
+        <property name="deploy.name" value="${deploy.base.dir}${rel.ver}" />
+        <property name="deploy.dir" value="${build.dir}/${deploy.name}" />
+        <property name="libs.file" value="${deploy.dir}/libs-at-compile-time.txt" />
+        <property name="jar.bin.file" value="${deploy.dir}/${jar.base.filename}${rel.ver}-bin.jar" />
+        <property name="jar.javadoc.file" value="${deploy.dir}/${jar.base.filename}${rel.ver}-javadoc.jar" />
+        <property name="jar.source.file" value="${deploy.dir}/${jar.base.filename}${rel.ver}-source.jar" />
+        
+        <delete dir="${deploy.dir}"/>
+        <mkdir dir="${deploy.dir}"/>
+        
+        <!-- Jar Files -->
+        <jar destfile="${jar.bin.file}" basedir="${classes.dir}" excludes="examples/**" />
+        <jar destfile="${jar.javadoc.file}" basedir="${api.dir}" />
+        <jar destfile="${jar.source.file}" basedir="${src.dir}" />
+        
+        <!-- ReadMe file -->
+        <copy todir="${deploy.dir}">
+          <fileset file="${readme.file}" />
+        </copy>
+        
+        <!-- Identify libraries used at compile time -->
+        <pathconvert pathsep="${line.separator}" property="expanded.main.class.path" refid="external.jars" >
+            <map from="${basedir}${file.separator}" to=""/>
+            <map from="${lib.dir}${path.separator}" to=""/>
+        </pathconvert>
+        <echo message="Libraries used at compile time:${line.separator}${line.separator}" file="${libs.file}"/>
+        <echo message="${expanded.main.class.path}" file="${libs.file}" append="true"/>
+        
+        <!-- Zip it all up -->
+        <delete file="${deploy.name}.zip"/>
+        <zip destfile="${deploy.dir}.zip">
+          <zipfileset dir="${deploy.dir}" prefix="${deploy.dir}"/>
+        </zip>
+    </target>
+    
+    <target name="clean-build" depends="clean,compile" />
+    
+    <target name="main" depends="deploy" />
+</project>
