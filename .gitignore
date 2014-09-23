@@ -1,0 +1,17 @@
+# Maven
+target/
+
+# Editor backup files
+*.bak
+*~
+
+# copied markdown files for site
+src/site/markdown/
+
+# Eclipse project files
+.classpath
+.project
+.settings
+
+# Idea project files
+.idea
