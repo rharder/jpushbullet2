@@ -1,13 +1,4 @@
-/**
-
-        <p>
-          This is a <strong>Public Domain</strong> Java library for 
-          interacting with the <a href="http://www.pushbullet.com">Pushbullet</a>
-          service. It supports both sending and receiving notifications. 
-          Thanks to <a href="https://github.com/shakethat/jpushbullet">shakethat at github</a>
-          for the insights from his library, which was made for an earlier set of Pushbullet APIs.
-        </p>
-        
+/* Not sure how to make javadoc accept this. Will conquer this one another time. -RH
    <style type="text/css">
 <!--
 #apisupporttable {  margin: 1em auto 1em auto; border-collapse: collapse; border-top: 2px solid black; border-bottom: 2px solid black; }
@@ -22,13 +13,26 @@
 .depslist li {  margin: 0.2em}
 -->
 </style>   
+*/
+
+/**
+
+        <p>
+          This is a <strong>Public Domain</strong> Java library for 
+          interacting with the <a href="http://www.pushbullet.com">Pushbullet</a>
+          service. It supports both sending and receiving notifications. 
+          Thanks to <a href="https://github.com/shakethat/jpushbullet">shakethat at github</a>
+          for the insights from his library, which was made for an earlier set of Pushbullet APIs.
+        </p>
+        
+
 
         <p>The <a href="https://docs.pushbullet.com/http/">Pushbullet HTTP API</a> identifies 
         seven capabilities, of which jPushbullet2 supports five:</p>
 
 
-        <table id="apisupporttable">
-         <thead><tr><th>Pushbullet API</th><th>Supported in <br />jPushbullet2</th><th>Future Plans</th></tr></thead>
+        <table id="apisupporttable" summary="Supported features">
+         <thead><tr><th>Pushbullet API</th><th>Supported in <br>jPushbullet2</th><th>Future Plans</th></tr></thead>
          <tbody>
              <tr class="supported"><td><a href="https://docs.pushbullet.com/v2/pushes">/v2/pushes</a></td><td>Yes</td><td></td></tr>
              <tr class="supported"><td><a href="https://docs.pushbullet.com/v2/devices">/v2/devices</a></td><td>Yes</td><td></td></tr>

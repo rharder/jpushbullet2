@@ -637,7 +637,7 @@ public class PushbulletClient{
     
     /**
      * Fetch pushes but on a separate thread.
-     * See {@link #getPushesAsync(String,double,int,boolean,Callback)}
+     * See {@link #getPushesAsync(double, int, boolean, Callback)}
      * for details about paging.
      * 
      * @param limit max number of pushes to return
@@ -708,7 +708,7 @@ public class PushbulletClient{
      * list of pushes but can be used as an additional way to test for when
      * the entire list of pushes are retrieved.</p>
      * 
-     * <code><pre>
+     * <pre><code>
         PushbulletClient client = new PushbulletClient( "AFC1334...API Key...958DF" );
         Future&lt;List&lt;Push&gt;&gt; fut = client.getPushesAsync(null, 0, 100, true, new Callback&lt;List&lt;Push&gt;&gt;() {
             public void completed(List&lt;Push&gt; pushes, PushbulletException ex) {
@@ -719,7 +719,7 @@ public class PushbulletClient{
             Thread.sleep(100);
         }
         // Work is done now
-     * </pre></code>
+     * </code></pre>
      * 
      * @param modifiedAfter the timestamp after which pushes will be retrieved
      * @param limit max number of pushes to return (zero indicates no limit)
@@ -818,7 +818,7 @@ public class PushbulletClient{
      * Send a note
      * 
      * 
-     * <code><pre>
+     * <pre><code>
      * PushbulletClient pbClient = new PushbulletClient("AFC1334...API Key...958DF");
      * try{
      *     pbClient.sendNote( "A34...device iden...98C", "My Title", "My Body" );
@@ -1049,8 +1049,7 @@ public class PushbulletClient{
         // Build upload connection
         // Transfer all of the "data" elements from Pushbullet's response
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        for (Iterator it = upReq.data.entrySet().iterator(); it.hasNext();) {
-            Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
+        for (Map.Entry<String, String> entry : upReq.data.entrySet()) {
             builder.addTextBody( entry.getKey(), entry.getValue() );
         }
         builder.addBinaryBody("file", file); // Actual file contents

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package net.iharder.jpushbullet2;
 
 import com.google.gson.Gson;
@@ -12,7 +6,10 @@ import com.google.gson.JsonSyntaxException;
 import java.lang.reflect.Type;
 
 /**
- *
+ * This class is just to separate the specific json tool that's 
+ * used from the rest of the code.
+ * 
+ * 
  * @author rob
  */
 public class JsonHelper {
@@ -20,7 +17,7 @@ public class JsonHelper {
     /**
      * Thanks, Google, for the easy JSON reading.
      */
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
     
     
     
@@ -29,7 +26,7 @@ public class JsonHelper {
      * This helps abstract the json-specific converter from the rest of the
      * code. For example this method call would stand in for the following
      * Gson call:
-     * <code><pre>PushList pushList = gson.fromJson(msg, PushList.class);</pre></code>
+     * <code>PushList pushList = gson.fromJson(msg, PushList.class);</code>
      * 
      * @param <T> The class of the object to convert into
      * @param jsonText the json text
