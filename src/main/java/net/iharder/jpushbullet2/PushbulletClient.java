@@ -21,8 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.activation.MimetypesFileTypeMap;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.CloseReason;
@@ -49,6 +47,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Access the Pushbullet (version 2) API including receiving updates
@@ -69,7 +69,9 @@ import org.apache.http.message.BasicNameValuePair;
  * @version 0.2
  */
 public class PushbulletClient{
-    
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PushbulletClient.class);
+
     /**
      * User's Pushbullet key, until I can figure out OAuth.
      */
@@ -199,7 +201,7 @@ public class PushbulletClient{
                 websocketSession.close( new CloseReason( CloseReason.CloseCodes.NORMAL_CLOSURE, "User stopped the service" ) );
             }
         } catch (IOException ex) {
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("while closing websocketSession", ex);
         } finally {
             websocketSession = null;
         }
@@ -211,7 +213,7 @@ public class PushbulletClient{
      */
     private synchronized void initWebsocket(){
         if( websocketSession != null && websocketSession.isOpen() ){
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.FINE, "initWebsocket called when session was already open");
+            LOGGER.debug("initWebsocket called when session was already open");
             return;
         }
 
@@ -234,23 +236,23 @@ public class PushbulletClient{
                             handleOnWebSocketMessage(message);
                         }
                     });
-                    Logger.getLogger(PushbulletClient.class.getName()).log(Level.INFO, "Websocket session established.");
+                    LOGGER.info("Websocket session established.");
                 } // end onOpen
                 @Override
                 public void onClose(Session session, CloseReason closeReason){
-                    Logger.getLogger(PushbulletClient.class.getName()).log(Level.INFO, "Websocket session closed: {0}", closeReason.getReasonPhrase());
+                    LOGGER.info("Websocket session closed: {0}", closeReason.getReasonPhrase());
                     // Timer will detect and correct
                 }   // end onClose
                 @Override
                 public void onError(Session session, Throwable thr){
-                    Logger.getLogger(PushbulletClient.class.getName()).log(Level.INFO, "Websocket session error: {0}", thr.getLocalizedMessage());
+                    LOGGER.info("Websocket session error: {0}", thr.getLocalizedMessage());
                 }   // end onClose
             }, websocketClientEndpointConfig, new URI(WEBSOCKET_URL + "/" + apiKey));
             // SUCCESS!
             fireWebsocketEstablishedEvent();
         } // end try
         catch (DeploymentException | IOException | URISyntaxException ex) {
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, "Error connecting to Pushbullet websocket: " + ex.getMessage());
+            LOGGER.error("Error connecting to Pushbullet websocket: ", ex);
             websocketSession = null;
         } finally {
         }
@@ -266,7 +268,7 @@ public class PushbulletClient{
         try {
             smsg = JsonHelper.fromJson(msg, StreamMessage.class);
         } catch (PushbulletException ex) {
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("", ex);
             return;
         }
         switch( smsg.type ){
@@ -280,7 +282,7 @@ public class PushbulletClient{
                                 firePushReceivedEvent( pushes );
                             }
                         } catch (PushbulletException ex) {
-                            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
+                            LOGGER.error("", ex);
                         }
                         break;
                     case StreamMessage.DEVICE_SUBTYPE:
@@ -1028,7 +1030,7 @@ public class PushbulletClient{
     public String sendFile(String iden, File file, String body) throws PushbulletException{
         if(file.length() >= 26214400){
             String errMsg = "The file you are trying to upload is too big. File: " + file.getName() + " Size: " + file.length();
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.WARNING,errMsg);
+            LOGGER.warn(errMsg);
             throw new PushbulletException(errMsg);
         }
         
@@ -1041,7 +1043,7 @@ public class PushbulletClient{
           nameValuePairs.add(new BasicNameValuePair( "file_name", file.getName() ));
           nameValuePairs.add(new BasicNameValuePair( "file_type", mime == null ? "application/octet-stream" : mime ) );
         UploadRequest upReq = JsonHelper.fromJson(doHttpPost( API_UPLOAD_REQUEST_URL, nameValuePairs ), UploadRequest.class);
-        Logger.getLogger(PushbulletClient.class.getName()).log(Level.FINE, "File will be available at {0}", upReq.file_url);
+        LOGGER.debug("File will be available at {0}", upReq.file_url);
         
         //
         // S T E P   2 :   U P L O A D   F I L E
@@ -1137,7 +1139,7 @@ public class PushbulletClient{
         try {
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("", ex);
             throw new PushbulletException( ex );
         }
         return doHttp(post);
@@ -1169,7 +1171,7 @@ public class PushbulletClient{
         StringBuilder result = new StringBuilder();
         try{
             HttpResponse response = httpClient.execute(request);
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.FINE,response.getStatusLine().toString());
+            LOGGER.debug(response.getStatusLine().toString());
             HttpEntity respEnt = response.getEntity();
             if( respEnt != null ){
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(respEnt.getContent()))) {
@@ -1179,7 +1181,7 @@ public class PushbulletClient{
                 }
             }   // end if: got response
         }   catch (  IOException  ex) {
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("", ex);
             throw new PushbulletException(ex);
         } 
         
@@ -1249,11 +1251,11 @@ public class PushbulletClient{
                             websocketSession.getBasicRemote().sendText("\n");
                             checkPulse.schedule(new KeepAliveTask(), websocketPulseInterval);
                         } else {
-                            Logger.getLogger(PushbulletClient.class.getName()).log(Level.INFO, "Timer discovered that websocket was closed. Attempting to reopen...");
+                            LOGGER.info("Timer discovered that websocket was closed. Attempting to reopen...");
                             initWebsocket();
                         }
                     } catch (IOException | IllegalStateException ex) {
-                        Logger.getLogger(PushbulletClient.class.getName()).log(Level.WARNING, ex.getMessage());
+                        LOGGER.warn(ex.getMessage());
                     } finally {
                         checkPulse.schedule(new KeepAliveTask(), websocketPulseInterval); // If startWebsocket fails, try again later
                     }
@@ -1262,7 +1264,7 @@ public class PushbulletClient{
                         try {
                             websocketSession.close();
                         } catch (IOException ex) {
-                            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
+                            LOGGER.error("while closing websocketSession", ex);
                         }
                     }
                     // Don't restart the timer
