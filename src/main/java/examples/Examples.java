@@ -7,14 +7,13 @@ import net.iharder.jpushbullet2.*;
 /**
  *
  * @author Robert.Harder
- * 
  */
 public class Examples {
     
     
     public static class GetDevices {
         public static void main(String[] args) throws PushbulletException{
-            //args = new String[]{""}; 
+            //args = new String[]{""};
             if( args.length < 1 ){
                 System.out.println("Arguments: API_KEY");
             } else {
