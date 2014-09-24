@@ -1,5 +1,5 @@
 <project name="jPushbullet2" basedir="." default="main">
-    <property name="src.dir"      value="src" />
+    <property name="src.dir"      value="src/main/java" />
     <property name="lib.dir"      value="lib" />
     <property name="build.dir"    value="build" />
     <property name="classes.dir"  value="${build.dir}/classes" />

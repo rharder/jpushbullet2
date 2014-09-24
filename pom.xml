@@ -99,9 +99,6 @@
 
     <build>
 
-        <!-- move sources to standard maven locations -->
-        <sourceDirectory>${project.basedir}/src</sourceDirectory>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
