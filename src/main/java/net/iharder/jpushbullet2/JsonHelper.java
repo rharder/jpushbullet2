@@ -37,7 +37,9 @@ public class JsonHelper {
     public static <T extends Object> T fromJson(String jsonText, Type typeOfT) throws PushbulletException {
         try{
             return gson.fromJson( jsonText, typeOfT );
-        } catch( JsonIOException | JsonSyntaxException ex ){
+        } catch( JsonIOException ex ){
+            throw new PushbulletException( ex );
+        } catch( JsonSyntaxException ex ){
             throw new PushbulletException( ex );
         }
     }

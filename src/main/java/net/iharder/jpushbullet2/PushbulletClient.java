@@ -10,7 +10,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -124,7 +123,7 @@ public class PushbulletClient{
      * Handles common instantiation items.
      */
     public PushbulletClient(){
-        this.listenerList = new LinkedList<>();
+        this.listenerList = new LinkedList<PushbulletListener>();
         this.websocketClientEndpointConfig = null;
         this.credsProvider = new BasicCredentialsProvider();
         this.httpClient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
@@ -249,7 +248,13 @@ public class PushbulletClient{
             // SUCCESS!
             fireWebsocketEstablishedEvent();
         } // end try
-        catch (DeploymentException | IOException | URISyntaxException ex) {
+        catch (DeploymentException ex) {
+            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, "Error connecting to Pushbullet websocket: " + ex.getMessage());
+            websocketSession = null;
+        } catch ( IOException ex) {
+            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, "Error connecting to Pushbullet websocket: " + ex.getMessage());
+            websocketSession = null;
+        } catch (URISyntaxException ex) {
             Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, "Error connecting to Pushbullet websocket: " + ex.getMessage());
             websocketSession = null;
         } finally {
@@ -269,26 +274,22 @@ public class PushbulletClient{
             Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
-        switch( smsg.type ){
-            case StreamMessage.TICKLE_TYPE:
-                switch( smsg.subtype ){
-                    case StreamMessage.PUSH_SUBTYPE:
-                        List<Push> pushes;
-                        try {
-                            pushes = getNewPushes();
-                            if( !pushes.isEmpty() ){
-                                firePushReceivedEvent( pushes );
-                            }
-                        } catch (PushbulletException ex) {
-                            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        break;
-                    case StreamMessage.DEVICE_SUBTYPE:
-                        fireDevicesChangedEvent();
-                        break;
-                }   // end switch: subtype
-                break;
-        }   // end switch: type
+        if( StreamMessage.TICKLE_TYPE.equals( smsg.type ) ){
+            if( StreamMessage.PUSH_SUBTYPE.equals( smsg.subtype ) ){
+                List<Push> pushes;
+                try {
+                    pushes = getNewPushes();
+                    if( !pushes.isEmpty() ){
+                        firePushReceivedEvent( pushes );
+                    }
+                } catch (PushbulletException ex) {
+                    Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }   // end if: push
+            else if( StreamMessage.DEVICE_SUBTYPE.equals( smsg.subtype) ){
+                fireDevicesChangedEvent();
+            }   // end if: device
+        }   // end if: tickle
     }
 
     
@@ -365,7 +366,7 @@ public class PushbulletClient{
      * @throws PushbulletException  if there is a communication or other error
      */
     public Device createDevice( String nickname ) throws PushbulletException{
-        List<NameValuePair> nameValuePairs = new LinkedList<>();
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
           nameValuePairs.add(new BasicNameValuePair("nickname", nickname));
           nameValuePairs.add(new BasicNameValuePair("type", "stream"));
         String result = doHttpPost( API_DEVICES_URL, nameValuePairs );
@@ -1171,11 +1172,12 @@ public class PushbulletClient{
             Logger.getLogger(PushbulletClient.class.getName()).log(Level.FINE,response.getStatusLine().toString());
             HttpEntity respEnt = response.getEntity();
             if( respEnt != null ){
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(respEnt.getContent()))) {
-                    for(String line; (line = br.readLine()) != null; ){
-                        result.append(line);
-                    }
+                BufferedReader br = null;
+                br = new BufferedReader(new InputStreamReader(respEnt.getContent()));
+                for(String line; (line = br.readLine()) != null; ){
+                    result.append(line);
                 }
+                br.close();
             }   // end if: got response
         }   catch (  IOException  ex) {
             Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
