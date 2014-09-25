@@ -52,12 +52,16 @@
 
     <developers>
         <developer>
-            <name>rharder</name>
-            <organizationUrl>https://github.com/rharder</organizationUrl>
+            <id>rharder</id>
+            <name>Robert Harder</name>
+            <organizationUrl>http://iharder.net</organizationUrl>
+            <timezone>-8</timezone>
         </developer>
         <developer>
+            <id>hakan</id>
             <name>Hakan Tandogan</name>
             <organizationUrl>http://tandogan.com/</organizationUrl>
+            <timezone>+1</timezone>
         </developer>
     </developers>
 
