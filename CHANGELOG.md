@@ -13,8 +13,16 @@ All notable changes to this project will be documented in this file.
 
 
 ## 0.2.0 - 2014-09-18
-- tbd
+
+### Added
+- Adding paging capability
+- Changed Push sorting to be newest first in keeping with Pushbullet.com practice
+
+### Fixed
+- Cleaned up some dependencies
 
 
 ## 0.1.0 - 2014-08-30
-- tbd
+
+### Added
+- Initial Release
