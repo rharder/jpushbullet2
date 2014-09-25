@@ -28,7 +28,7 @@
         <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
         <maven-source-plugin.version>2.3</maven-source-plugin.version>
 
-        <httpclient.version>4.3.3</httpclient.version>
+        <httpclient.version>4.3.5</httpclient.version>
         <gson.version>2.2.4</gson.version>
         <tyrus-standalone-client.version>1.7</tyrus-standalone-client.version>
 
