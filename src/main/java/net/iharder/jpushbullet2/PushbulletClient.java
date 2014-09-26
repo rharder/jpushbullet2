@@ -326,8 +326,10 @@ public class PushbulletClient{
          // Guaranteed to return a non-null array
          PushbulletListener[] listeners = listenerList.toArray(new PushbulletListener[0]);
          for( PushbulletListener l : listeners ){
-            if (pushEvent == null) pushEvent = new PushbulletEvent(this,pushes);
-            l.pushReceived(pushEvent);
+	     if (pushEvent == null) {
+                 pushEvent = new PushbulletEvent(this, pushes);
+	     }
+             l.pushReceived(pushEvent);
          }
      }        
 
@@ -340,8 +342,10 @@ public class PushbulletClient{
          // Guaranteed to return a non-null array
          PushbulletListener[] listeners = listenerList.toArray(new PushbulletListener[0]);
          for( PushbulletListener l : listeners ){
-            if (pushEvent == null) pushEvent = new PushbulletEvent(this);
-            l.devicesChanged(pushEvent);
+	     if (pushEvent == null) {
+                 pushEvent = new PushbulletEvent(this);
+	     }
+             l.devicesChanged(pushEvent);
          }
      }   
         
@@ -352,8 +356,10 @@ public class PushbulletClient{
          // Guaranteed to return a non-null array
          PushbulletListener[] listeners = listenerList.toArray(new PushbulletListener[0]);
          for( PushbulletListener l : listeners ){
-            if (pushEvent == null) pushEvent = new PushbulletEvent(this);
-            l.websocketEstablished(pushEvent);
+	     if (pushEvent == null) {
+                 pushEvent = new PushbulletEvent(this);
+	     }
+             l.websocketEstablished(pushEvent);
          }
      }   
     
@@ -467,7 +473,10 @@ public class PushbulletClient{
      * @throws PushbulletException not yet implemented
      */
     public List<String> getContacts() throws PushbulletException {
-        if( true ) throw new PushbulletException("Contact support not yet implemented.");
+        if( true ) {
+            throw new PushbulletException("Contact support not yet implemented.");
+	}
+
         String conResult = doHttpGet(API_CONTACTS_URL);
         
         return null;
