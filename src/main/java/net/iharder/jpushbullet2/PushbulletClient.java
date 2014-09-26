@@ -430,8 +430,6 @@ public class PushbulletClient{
             throw new PushbulletException("Unknown problem with response from Pushbullet: " + devResult );
         }
         
-        //List<Device> devices = devList.devices;
-        //Collections.sort(devices);
         return devList.devices;
     }
     
@@ -496,16 +494,7 @@ public class PushbulletClient{
     public List<String> getContacts() throws PushbulletException {
         if( true ) throw new PushbulletException("Contact support not yet implemented.");
         String conResult = doHttpGet(API_CONTACTS_URL);
-        //System.out.println(conResult);
         
-        //DeviceList devList = gson.fromJson(devResult, DeviceList.class);
-        //if( devList.devices == null ){
-        //    throw new PushbulletException("Unknown problem with response from Pushbullet: " + devResult );
-        //}
-        
-        //List<Device> devices = devList.devices;
-        //Collections.sort(devices);
-        //return devices;
         return null;
     }    
     
