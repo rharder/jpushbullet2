@@ -681,7 +681,7 @@ public class PushbulletClient{
         
         // If limit=0 and we have pages, get all the pages 
         if( limit == 0 && pushList.cursor != null ){
-            ArrayList<Push> cumulative = new ArrayList<Push>(500);
+            List<Push> cumulative = new ArrayList<Push>(500);
             cumulative.addAll(pushList.pushes);
             String cursor = pushList.cursor;
             while( cursor != null ){
