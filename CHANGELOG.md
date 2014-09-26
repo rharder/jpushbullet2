@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Switched logging to slf4j
 
 ### Fixed
+- Made project 1.6 compliant again
 - Updated dependencies to current released versions
 
 
