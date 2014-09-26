@@ -30,6 +30,7 @@
 
         <httpclient.version>4.3.5</httpclient.version>
         <gson.version>2.3</gson.version>
+        <javax-websocket-api.version>1.1</javax-websocket-api.version>
         <tyrus-standalone-client.version>1.8.3</tyrus-standalone-client.version>
 
         <!-- Logging -->
@@ -117,9 +118,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish.tyrus.bundles</groupId>
-            <artifactId>tyrus-standalone-client</artifactId>
-            <version>${tyrus-standalone-client.version}</version>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <version>${javax-websocket-api.version}</version>
         </dependency>
 
     </dependencies>

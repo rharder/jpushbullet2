@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Made project 1.6 compliant again
+- Remove tyrus dependency, use directly javax.websocket-api
 - Updated dependencies to current released versions
 
 
