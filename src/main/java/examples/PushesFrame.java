@@ -16,7 +16,7 @@ public class PushesFrame extends javax.swing.JFrame {
     private final static String API_KEY_PREF = "api_key";
 
     //private DefaultListModel pushListModel = new DefaultListModel();
-    private final DefaultListModel pushListModel = new DefaultListModel();
+    private final DefaultListModel<Push> pushListModel = new DefaultListModel<Push>();
     private String api_key = Preferences.userNodeForPackage(PushesFrame.class).get(API_KEY_PREF, "API Key");
 
     public String getApi_key() {
@@ -28,7 +28,7 @@ public class PushesFrame extends javax.swing.JFrame {
     }
     private PushbulletClient pbClient;
 
-    public DefaultListModel getPushListModel() {
+    public DefaultListModel<Push> getPushListModel() {
         return pushListModel;
     }
 
@@ -127,6 +127,7 @@ public class PushesFrame extends javax.swing.JFrame {
                 final DefaultListModel model = getPushListModel();
                 pbClient.getPushesAsync(new Callback<List<Push>>() {
                     @Override
+                    @SuppressWarnings("unchecked")
                     public void completed(final List<Push> pushes, PushbulletException ex) {
                         SwingUtilities.invokeLater( new Runnable() {
                             @Override
@@ -191,11 +192,13 @@ public class PushesFrame extends javax.swing.JFrame {
     private void myInitComponents() {
 
     }
+    
+    @SuppressWarnings("unchecked")
     public void handlePushReceivedEvent(final PushbulletEvent pushEvent){
         SwingUtilities.invokeLater(new Runnable(){
             @Override
             public void run() {
-                DefaultListModel model = getPushListModel();
+                DefaultListModel<Push> model = getPushListModel();
                 for( Push p : pushEvent.getPushes() ){
                     model.addElement(p);
                 }

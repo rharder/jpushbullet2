@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.CloseReason;
 import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
@@ -248,19 +250,14 @@ public class PushbulletClient{
             // SUCCESS!
             fireWebsocketEstablishedEvent();
         } // end try
-<<<<<<< HEAD
         catch (DeploymentException ex) {
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, "Error connecting to Pushbullet websocket: " + ex.getMessage());
+            LOGGER.error("Error connecting to Pushbullet websocket: " + ex.getMessage());
             websocketSession = null;
         } catch ( IOException ex) {
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, "Error connecting to Pushbullet websocket: " + ex.getMessage());
+            LOGGER.error("Error connecting to Pushbullet websocket: " + ex.getMessage());
             websocketSession = null;
         } catch (URISyntaxException ex) {
-            Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, "Error connecting to Pushbullet websocket: " + ex.getMessage());
-=======
-        catch (DeploymentException | IOException | URISyntaxException ex) {
-            LOGGER.error("Error connecting to Pushbullet websocket: ", ex);
->>>>>>> c1bc7d81b8984fc92027b39beaf65a29aa784ebc
+            LOGGER.error("Error connecting to Pushbullet websocket: " + ex.getMessage());
             websocketSession = null;
         } finally {
         }
@@ -279,7 +276,7 @@ public class PushbulletClient{
             LOGGER.error("", ex);
             return;
         }
-<<<<<<< HEAD
+        
         if( StreamMessage.TICKLE_TYPE.equals( smsg.type ) ){
             if( StreamMessage.PUSH_SUBTYPE.equals( smsg.subtype ) ){
                 List<Push> pushes;
@@ -289,36 +286,14 @@ public class PushbulletClient{
                         firePushReceivedEvent( pushes );
                     }
                 } catch (PushbulletException ex) {
-                    Logger.getLogger(PushbulletClient.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error("Error getting pushes: " + ex.getMessage());
                 }
             }   // end if: push
             else if( StreamMessage.DEVICE_SUBTYPE.equals( smsg.subtype) ){
                 fireDevicesChangedEvent();
             }   // end if: device
         }   // end if: tickle
-=======
-        switch( smsg.type ){
-            case StreamMessage.TICKLE_TYPE:
-                switch( smsg.subtype ){
-                    case StreamMessage.PUSH_SUBTYPE:
-                        List<Push> pushes;
-                        try {
-                            pushes = getNewPushes();
-                            if( !pushes.isEmpty() ){
-                                firePushReceivedEvent( pushes );
-                            }
-                        } catch (PushbulletException ex) {
-                            LOGGER.error("", ex);
-                        }
-                        break;
-                    case StreamMessage.DEVICE_SUBTYPE:
-                        fireDevicesChangedEvent();
-                        break;
-                }   // end switch: subtype
-                break;
-        }   // end switch: type
->>>>>>> c1bc7d81b8984fc92027b39beaf65a29aa784ebc
-    }
+    }   // end handleOnWebSocketMessage
 
     
 /* ********   E V E N T S   ******** */    
@@ -455,7 +430,7 @@ public class PushbulletClient{
      */
     public List<Device> getActiveDevices() throws PushbulletException {
         List<Device> devices = getDevices();
-        List<Device> activeDevices = new ArrayList( devices.size() );
+        List<Device> activeDevices = new ArrayList<Device>( devices.size() );
         for( Device d : devices ){
             if( d.isActive() ){
                 activeDevices.add(d);
@@ -613,9 +588,9 @@ public class PushbulletClient{
      * @return a Java Future object relating to work being completed
      */
     public Future<List<Push>> getNewPushesAsync( final int limit, Callback<List<Push>> callback){
-        return doAsync( new Callable(){
+        return doAsync( new Callable<List<Push>>(){
             @Override
-            public Object call() throws Exception {
+            public List<Push> call() throws Exception {
                 return getNewPushes(limit);
             }
         }, callback );
@@ -697,7 +672,7 @@ public class PushbulletClient{
         
         // If limit=0 and we have pages, get all the pages 
         if( limit == 0 && pushList.cursor != null ){
-            ArrayList<Push> cumulative = new ArrayList<>(500);
+            ArrayList<Push> cumulative = new ArrayList<Push>(500);
             cumulative.addAll(pushList.pushes);
             String cursor = pushList.cursor;
             while( cursor != null ){
@@ -852,7 +827,7 @@ public class PushbulletClient{
      * @throws PushbulletException  if there is a communication or other error
      */
     public String sendNote(String iden, String title, String body) throws PushbulletException{
-        List<NameValuePair> nameValuePairs = new LinkedList<>();
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
           nameValuePairs.add(new BasicNameValuePair("type", "note"));
           nameValuePairs.add(new BasicNameValuePair("device_iden", iden));
           nameValuePairs.add(new BasicNameValuePair("title", title));
@@ -870,10 +845,10 @@ public class PushbulletClient{
      * @param async optional callback
      * @return  A Java Future object related to the completion of the task
      */
-    public Future<String> sendNoteAsync( final String iden, final String title, final String body, final Callback async ){
-        return doAsync( new Callable(){
+    public Future<String> sendNoteAsync( final String iden, final String title, final String body, final Callback<String> async ){
+        return doAsync( new Callable<String>(){
             @Override
-            public Object call() throws Exception {
+            public String call() throws Exception {
                 return sendNote( iden, title, body );
             }
         }, async );
@@ -889,7 +864,7 @@ public class PushbulletClient{
      * @throws PushbulletException  if there is a communication or other error
      */
     public String sendLink(String iden, String title, String url) throws PushbulletException{
-        List<NameValuePair> nameValuePairs = new LinkedList<>();
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
           nameValuePairs.add(new BasicNameValuePair("type", "link"));
           nameValuePairs.add(new BasicNameValuePair("device_iden", iden));
           nameValuePairs.add(new BasicNameValuePair("title", title));
@@ -922,10 +897,10 @@ public class PushbulletClient{
      * @param async optional callback
      * @return  A Java Future object related to the completion of the task
      */
-    public Future<String> sendLinkAsync( final String iden, final String title, final String url, final Callback async ){
-        return doAsync( new Callable(){
+    public Future<String> sendLinkAsync( final String iden, final String title, final String url, final Callback<String> async ){
+        return doAsync( new Callable<String>(){
             @Override
-            public Object call() throws Exception {
+            public String call() throws Exception {
                 return sendLink( iden, title, url );
             }
         }, async );
@@ -942,8 +917,7 @@ public class PushbulletClient{
      * @throws PushbulletException  if there is a communication or other error
      */
     public String sendList(String iden, String title, List<String> list) throws PushbulletException{
-
-        List<NameValuePair> nameValuePairs = new LinkedList<>();
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
           nameValuePairs.add(new BasicNameValuePair("type", "list"));
           nameValuePairs.add(new BasicNameValuePair("device_iden", iden));
           nameValuePairs.add(new BasicNameValuePair("title", title));
@@ -965,7 +939,7 @@ public class PushbulletClient{
      * @throws PushbulletException  if there is a communication or other error
      */
     public String sendList(String iden, String title, String... list) throws PushbulletException{
-        List<NameValuePair> nameValuePairs = new LinkedList<>();
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
           nameValuePairs.add(new BasicNameValuePair("type", "list"));
           nameValuePairs.add(new BasicNameValuePair("device_iden", iden));
           nameValuePairs.add(new BasicNameValuePair("title", title));
@@ -984,10 +958,10 @@ public class PushbulletClient{
      * @param async optional callback
      * @return  A Java Future object related to the completion of the task
      */
-    public Future<String> sendListAsync( final String iden, final String title, final List<String> list, final Callback async ){
-        return doAsync( new Callable(){
+    public Future<String> sendListAsync( final String iden, final String title, final List<String> list, final Callback<String> async ){
+        return doAsync( new Callable<String>(){
             @Override
-            public Object call() throws Exception {
+            public String call() throws Exception {
                 return sendList( iden, title, list );
             }
         }, async );
@@ -1004,7 +978,7 @@ public class PushbulletClient{
      * @throws PushbulletException  if there is a communication or other error
      */
     public String sendAddress(String iden, String name, String address) throws PushbulletException{
-        List<NameValuePair> nameValuePairs = new LinkedList<>();
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
           nameValuePairs.add(new BasicNameValuePair("type", "addess"));
           nameValuePairs.add(new BasicNameValuePair("device_iden", iden));
           nameValuePairs.add(new BasicNameValuePair("name", name));
@@ -1022,10 +996,10 @@ public class PushbulletClient{
      * @param async optional callback
      * @return  A Java Future object related to the completion of the task
      */
-    public Future<String> sendAddressAsync( final String iden, final String name, final String address, final Callback async ){
-        return doAsync( new Callable(){
+    public Future<String> sendAddressAsync( final String iden, final String name, final String address, final Callback<String> async ){
+        return doAsync( new Callable<String>(){
             @Override
-            public Object call() throws Exception {
+            public String call() throws Exception {
                 return sendAddress( iden, name, address );
             }
         }, async );
@@ -1055,7 +1029,7 @@ public class PushbulletClient{
         //
         MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap(); // Get MIME type of file 
         String mime = mimeTypesMap.getContentType(file);                // I suspect Java is pretty bad here
-        List<NameValuePair> nameValuePairs = new LinkedList<>();
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
           nameValuePairs.add(new BasicNameValuePair( "file_name", file.getName() ));
           nameValuePairs.add(new BasicNameValuePair( "file_type", mime == null ? "application/octet-stream" : mime ) );
         UploadRequest upReq = JsonHelper.fromJson(doHttpPost( API_UPLOAD_REQUEST_URL, nameValuePairs ), UploadRequest.class);
@@ -1077,7 +1051,7 @@ public class PushbulletClient{
         //
         // S T E P   3 :   P U S H   N E W S   O F   T H E   F I L E
         //
-        List<NameValuePair> pairs2 = new LinkedList<>();
+        List<NameValuePair> pairs2 = new LinkedList<NameValuePair>();
           pairs2.add( new BasicNameValuePair( "device_iden", iden ) );
           pairs2.add( new BasicNameValuePair( "type", "file" ) );
           pairs2.add( new BasicNameValuePair( "file_name", upReq.file_name ) );
@@ -1100,10 +1074,10 @@ public class PushbulletClient{
      * @param async optional callback
      * @return  A Java Future object related to the completion of the task
      */
-    public Future<String> sendFileAsync( final String iden, final File file, final String body, final Callback async ){
-        return doAsync( new Callable(){
+    public Future<String> sendFileAsync( final String iden, final File file, final String body, final Callback<String> async ){
+        return doAsync( new Callable<String>(){
             @Override
-            public Object call() throws Exception {
+            public String call() throws Exception {
                 return sendFile( iden, file, body );
             }
         }, async );
@@ -1169,7 +1143,7 @@ public class PushbulletClient{
      * @throws PushbulletException  if there is a communication or other error
      */
     protected String doHttpPost( String url, NameValuePair... nameValuePairs ) throws PushbulletException{
-        List<NameValuePair> pairs = new LinkedList<>();
+        List<NameValuePair> pairs = new LinkedList<NameValuePair>();
         pairs.addAll(Arrays.asList(nameValuePairs));
         return doHttpPost(url, pairs );
     }
@@ -1219,7 +1193,7 @@ public class PushbulletClient{
      * @param callable the task to perform on another thread
      * @param async the object to call when the task is done
      */
-    private synchronized Future doAsync( final Callable callable, final Callback async ){
+    private synchronized <T extends Object> Future<T> doAsync( final Callable<T> callable, final Callback<T> async ){
         if( this.asyncExecutor == null ){
             asyncExecutor = Executors.newCachedThreadPool(new ThreadFactory() {
                 @Override
@@ -1231,10 +1205,10 @@ public class PushbulletClient{
                 }
             });
         }
-        return asyncExecutor.submit(new Callable(){
+        return asyncExecutor.submit(new Callable<T>(){
             @Override
-            public Object call() throws Exception {
-                Object response = null;
+            public T call() throws Exception {
+                T response = null;
                 PushbulletException exc = null;
                 try {
                     response = callable.call();
@@ -1270,7 +1244,9 @@ public class PushbulletClient{
                             LOGGER.info("Timer discovered that websocket was closed. Attempting to reopen...");
                             initWebsocket();
                         }
-                    } catch (IOException | IllegalStateException ex) {
+                    } catch (IOException ex) {
+                        LOGGER.warn(ex.getMessage());
+                    }  catch (IllegalStateException ex) {
                         LOGGER.warn(ex.getMessage());
                     } finally {
                         checkPulse.schedule(new KeepAliveTask(), websocketPulseInterval); // If startWebsocket fails, try again later

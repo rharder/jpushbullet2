@@ -38,7 +38,7 @@ public class MainTrial1 extends javax.swing.JFrame implements PropertyChangeList
 
     private PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
     private PushbulletClient pbClient;
-    private DefaultListModel pushListModel = new DefaultListModel();
+    private DefaultListModel<ListPushElement> pushListModel = new DefaultListModel<ListPushElement>();
     
     /**
      * Creates new form MainTrial1
@@ -302,11 +302,9 @@ public class MainTrial1 extends javax.swing.JFrame implements PropertyChangeList
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if( this.equals( evt.getSource() ) ){
-            switch( evt.getPropertyName() ){
-                case PROP_APIKEY:
+            if( PROP_APIKEY.equals(evt.getPropertyName()) ){
                     handleNewApiKey();
-                    break;
-            }   // end switch
+            }   // end if
         }   // end if: this
     }
 
