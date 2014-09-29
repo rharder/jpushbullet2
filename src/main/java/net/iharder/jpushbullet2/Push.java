@@ -1,5 +1,7 @@
 package net.iharder.jpushbullet2;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 import java.lang.reflect.Field;
 
 
@@ -105,13 +107,15 @@ public class Push implements Comparable<Push> {
      * Pushes sort such that newer pushes will be at the beginning
      * of a list. This is in keeping with Pushbullet.com's policy of
      * sending pushes newest first.
-     * @param t Push to compare
+     * @param o Push to compare
      * @return comparison value
      */
     @Override
-    public int compareTo(Push t) {
-        return Double.compare(t.getModified(),this.getModified()); // Newest first
-        //return Double.compare(this.getModified(),t.getModified()); // Oldest first
+    public int compareTo(Push o) {
+        Push other = (Push) o;
+        return new CompareToBuilder()
+            .append(this.modified, o.modified)
+            .toComparison();
     }
     
     
