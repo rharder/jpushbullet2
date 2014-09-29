@@ -1,6 +1,7 @@
 package net.iharder.jpushbullet2;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.lang.reflect.Field;
 
@@ -117,7 +118,27 @@ public class Push implements Comparable<Push> {
             .append(this.modified, o.modified)
             .toComparison();
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+
+        Push rhs = (Push) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(modified, rhs.modified)
+                .isEquals();
+    }
     
     @Override
     public String toString(){

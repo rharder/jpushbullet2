@@ -1,6 +1,7 @@
 package net.iharder.jpushbullet2;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.lang.reflect.Field;
 
@@ -85,7 +86,28 @@ public class Device implements Comparable<Device> {
             .append(this.iden, other.iden)
             .toComparison();
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+
+        Device rhs = (Device) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(iden, rhs.iden)
+                .isEquals();
+    }
+
     @Override
     public String toString(){
         StringBuilder s = new StringBuilder();
