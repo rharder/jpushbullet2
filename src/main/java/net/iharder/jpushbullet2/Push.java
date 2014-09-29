@@ -1,8 +1,8 @@
 package net.iharder.jpushbullet2;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+//import org.apache.commons.lang3.builder.CompareToBuilder;
+//import org.apache.commons.lang3.builder.EqualsBuilder;
+//import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.lang.reflect.Field;
 
@@ -114,10 +114,11 @@ public class Push implements Comparable<Push> {
      */
     @Override
     public int compareTo(Push o) {
-        Push other = (Push) o;
-        return new CompareToBuilder()
-            .append(this.modified, o.modified)
-            .toComparison();
+        return Double.compare(this.modified, o.modified);
+        //Push other = (Push) o;
+        //return new CompareToBuilder()
+        //    .append(this.modified, o.modified)
+        //    .toComparison();
     }
 
     @Override
@@ -133,17 +134,23 @@ public class Push implements Comparable<Push> {
         if (obj.getClass() != getClass()) {
             return false;
         }
+        
+        if (this.iden == null){
+            return false;
+        }
 
         Push rhs = (Push) obj;
-        return new EqualsBuilder()
-                .appendSuper(super.equals(obj))
-                .append(modified, rhs.modified)
-                .isEquals();
+        return this.iden.equals(rhs.iden);
+        //return new EqualsBuilder()
+        //        .appendSuper(super.equals(obj))
+        //        .append(modified, rhs.modified)
+        //        .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(modified).toHashCode();
+        //return new HashCodeBuilder(17, 37).append(modified).toHashCode();
+        return this.iden == null ? super.hashCode() : this.iden.hashCode();
     }
 
     @Override

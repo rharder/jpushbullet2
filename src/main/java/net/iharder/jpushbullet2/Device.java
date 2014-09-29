@@ -1,8 +1,8 @@
 package net.iharder.jpushbullet2;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+//import org.apache.commons.lang3.builder.CompareToBuilder;
+//import org.apache.commons.lang3.builder.EqualsBuilder;
+//import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.lang.reflect.Field;
 
@@ -82,10 +82,11 @@ public class Device implements Comparable<Device> {
 
     @Override
     public int compareTo(Device o) {
-        Device other = (Device) o;
-        return new CompareToBuilder()
-            .append(this.iden, other.iden)
-            .toComparison();
+        return this.iden == null ? -1 : this.iden.compareTo(o.iden);
+//        Device other = (Device) o;
+//        return new CompareToBuilder()
+//            .append(this.iden, other.iden)
+//            .toComparison();
     }
 
     @Override
@@ -102,16 +103,22 @@ public class Device implements Comparable<Device> {
             return false;
         }
 
+        if( this.iden == null ){
+            return false;
+        }
+        
         Device rhs = (Device) obj;
-        return new EqualsBuilder()
-                .appendSuper(super.equals(obj))
-                .append(iden, rhs.iden)
-                .isEquals();
+        return this.iden.equals(rhs.iden);
+        //return new EqualsBuilder()
+        //        .appendSuper(super.equals(obj))
+        //        .append(iden, rhs.iden)
+        //        .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(iden).toHashCode();
+        //return new HashCodeBuilder(17, 37).append(iden).toHashCode();
+        return this.iden == null ? super.hashCode() : this.iden.hashCode();
     }
 
     @Override
