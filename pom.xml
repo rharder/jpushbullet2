@@ -16,7 +16,7 @@
 
     <properties>
         <encoding>UTF-8</encoding>
-        <java.version>1.7</java.version>
+        <java.version>1.6</java.version>
 
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 
@@ -28,8 +28,10 @@
         <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
         <maven-source-plugin.version>2.3</maven-source-plugin.version>
 
+        <commons-lang.version>3.3.2</commons-lang.version>
         <httpclient.version>4.3.5</httpclient.version>
         <gson.version>2.3</gson.version>
+        <javax-websocket-api.version>1.1</javax-websocket-api.version>
         <tyrus-standalone-client.version>1.8.3</tyrus-standalone-client.version>
 
         <!-- Logging -->
@@ -86,6 +88,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
@@ -117,9 +125,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish.tyrus.bundles</groupId>
-            <artifactId>tyrus-standalone-client</artifactId>
-            <version>${tyrus-standalone-client.version}</version>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <version>${javax-websocket-api.version}</version>
         </dependency>
 
     </dependencies>

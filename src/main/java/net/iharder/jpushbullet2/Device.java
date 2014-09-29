@@ -1,5 +1,9 @@
 package net.iharder.jpushbullet2;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.lang.reflect.Field;
 
 
@@ -77,17 +81,39 @@ public class Device implements Comparable<Device> {
     }
 
     @Override
-    public int compareTo(Device t) {
-        
-        if( t == null ) return -1;
-        if( this.getIden() == null ){
-            if( t.getIden() == null ) return 0;
-            else return 1;
-        }
-        return this.getIden().compareTo(t.getIden());
+    public int compareTo(Device o) {
+        Device other = (Device) o;
+        return new CompareToBuilder()
+            .append(this.iden, other.iden)
+            .toComparison();
     }
-    
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+
+        Device rhs = (Device) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(iden, rhs.iden)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(iden).toHashCode();
+    }
+
     @Override
     public String toString(){
         StringBuilder s = new StringBuilder();

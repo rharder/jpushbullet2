@@ -6,9 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Released to Maven Central
+- Use compareTo(), equals(), toString() etc from commons-lang
 - Switched logging to slf4j
 
 ### Fixed
+- Made project 1.6 compliant again
+- Remove tyrus dependency, use directly javax.websocket-api
 - Updated dependencies to current released versions
 
 

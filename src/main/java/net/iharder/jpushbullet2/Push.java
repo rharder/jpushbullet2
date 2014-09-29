@@ -1,5 +1,9 @@
 package net.iharder.jpushbullet2;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.lang.reflect.Field;
 
 
@@ -105,16 +109,43 @@ public class Push implements Comparable<Push> {
      * Pushes sort such that newer pushes will be at the beginning
      * of a list. This is in keeping with Pushbullet.com's policy of
      * sending pushes newest first.
-     * @param t Push to compare
+     * @param o Push to compare
      * @return comparison value
      */
     @Override
-    public int compareTo(Push t) {
-        return Double.compare(t.getModified(),this.getModified()); // Newest first
-        //return Double.compare(this.getModified(),t.getModified()); // Oldest first
+    public int compareTo(Push o) {
+        Push other = (Push) o;
+        return new CompareToBuilder()
+            .append(this.modified, o.modified)
+            .toComparison();
     }
-    
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+
+        Push rhs = (Push) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(modified, rhs.modified)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(modified).toHashCode();
+    }
+
     @Override
     public String toString(){
         StringBuilder s = new StringBuilder();
