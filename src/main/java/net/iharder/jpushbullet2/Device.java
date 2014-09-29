@@ -2,6 +2,7 @@ package net.iharder.jpushbullet2;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.lang.reflect.Field;
 
@@ -106,6 +107,11 @@ public class Device implements Comparable<Device> {
                 .appendSuper(super.equals(obj))
                 .append(iden, rhs.iden)
                 .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(iden).toHashCode();
     }
 
     @Override

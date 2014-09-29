@@ -2,6 +2,7 @@ package net.iharder.jpushbullet2;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.lang.reflect.Field;
 
@@ -139,7 +140,12 @@ public class Push implements Comparable<Push> {
                 .append(modified, rhs.modified)
                 .isEquals();
     }
-    
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(modified).toHashCode();
+    }
+
     @Override
     public String toString(){
         StringBuilder s = new StringBuilder();
