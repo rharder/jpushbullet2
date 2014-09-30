@@ -1200,9 +1200,9 @@ public class PushbulletClient{
      * Used internally for the many sendXxxxAsync, getXxxxAsync, etc methods.
      * 
      * @param callable the task to perform on another thread
-     * @param async the object to call when the task is done
+     * @param callback the object to call when the task is done
      */
-    private synchronized <T extends Object> Future<T> doAsync( final Callable<T> callable, final Callback<T> async ){
+    private synchronized <T extends Object> Future<T> doAsync( final Callable<T> callable, final Callback<T> callback ){
         if( this.asyncExecutor == null ){
             asyncExecutor = Executors.newCachedThreadPool(new ThreadFactory() {
                 @Override
@@ -1225,8 +1225,14 @@ public class PushbulletClient{
                     exc = new PushbulletException(ex);
                     throw exc;
                 } finally {
-                    //String respStr = response == null ? null : response.toString(); 
-                    async.completed(response, exc);
+                    // Although the Callable<T> may throw an exception,
+                    // and we want the associated Future object to have
+                    // knowledge of it, we still need to call the user's
+                    // Callback<T> method.  This is why we have a method
+                    // call and return within a finally block.
+                    // Not sure how to suppress the warning in various
+                    // Java styling tools.
+                    callback.completed(response, exc);
                     return response;
                 }
             }
