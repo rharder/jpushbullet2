@@ -1,9 +1,5 @@
 package net.iharder.jpushbullet2;
 
-//import org.apache.commons.lang3.builder.CompareToBuilder;
-//import org.apache.commons.lang3.builder.EqualsBuilder;
-//import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.lang.reflect.Field;
 
 
@@ -12,7 +8,8 @@ import java.lang.reflect.Field;
  * from the Pushbullet servers.
  * @author Robert.Harder
  */
-public class Device implements Comparable<Device> {
+public final class Device implements Comparable<Device> {
+	
     private Number id;
     private String iden;
     private String nickname;
@@ -83,10 +80,6 @@ public class Device implements Comparable<Device> {
     @Override
     public int compareTo(Device o) {
         return this.iden == null ? -1 : this.iden.compareTo(o.iden);
-//        Device other = (Device) o;
-//        return new CompareToBuilder()
-//            .append(this.iden, other.iden)
-//            .toComparison();
     }
 
     @Override
@@ -109,15 +102,10 @@ public class Device implements Comparable<Device> {
         
         Device rhs = (Device) obj;
         return this.iden.equals(rhs.iden);
-        //return new EqualsBuilder()
-        //        .appendSuper(super.equals(obj))
-        //        .append(iden, rhs.iden)
-        //        .isEquals();
     }
 
     @Override
     public int hashCode() {
-        //return new HashCodeBuilder(17, 37).append(iden).toHashCode();
         return this.iden == null ? super.hashCode() : this.iden.hashCode();
     }
 
@@ -131,7 +119,6 @@ public class Device implements Comparable<Device> {
             try {
                 s.append( f.get(this) );
             } catch (Exception ex) {
-                //Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
             } 
         }
         s.append("}");

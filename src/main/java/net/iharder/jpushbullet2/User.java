@@ -7,19 +7,25 @@ import java.util.logging.Logger;
 
 /**
  * Represents a user as decoded from the json data from Pushbullet.
+ * It is created by introspection and thus doesn't have any full
+ * constructors. It is immutable and so has no setter methods.
+ * 
+ * 
  * 
  * @author rob
  */
-public class User {
-    protected String iden;
-    protected double created;
-    protected double modified;    
-    protected String email;
-    protected String email_normalized;
-    protected String name;
-    protected String image_url;
-    protected Object google_userinfo;
-    protected Object preferences;
+public final class User implements Comparable<User>{
+	
+    private String iden;
+    private double created;
+    private double modified;    
+    private String email;
+    private String email_normalized;
+    private String name;
+    private String image_url;
+    private Object google_userinfo;
+    private Object preferences;
+
 
     public String getIden() {
         return iden;
@@ -33,71 +39,68 @@ public class User {
     public double getCreated() {
         return created;
     }
-
-    public void setCreated(double created) {
-        this.created = created;
-    }
   
     public double getModified() {
         return modified;
     }
 
-    public void setModified(double modified) {
-        this.modified = modified;
-    }
-
-
     public String getEmail() {
         return email;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
 
     public String getEmail_normalized() {
         return email_normalized;
     }
 
-    public void setEmail_normalized(String email_normalized) {
-        this.email_normalized = email_normalized;
-    }
-
-
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 
     public String getImage_url() {
         return image_url;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    /**
+     * Sorts according to <tt>name</tt> field.
+     */
+    @Override
+    public int compareTo(User o) {
+        return this.name == null ? -1 : this.name.compareTo(o.name);
     }
 
-    /*public Object getGoogle_userinfo() {
-        return google_userinfo;
+    /**
+     * Two users will be considered equal if their <tt>iden</tt>
+     * fields are equal.
+     *
+     * @param obj The other user to compare
+     * @return true if the two users have the same <tt>iden</tt>
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+
+        if( this.iden == null ){
+            return false;
+        }
+        
+        User rhs = (User) obj;
+        return this.iden.equals(rhs.iden);
     }
 
-    public void setGoogle_userinfo(Object google_userinfo) {
-        this.google_userinfo = google_userinfo;
+    @Override
+    public int hashCode() {
+        return this.iden == null ? super.hashCode() : this.iden.hashCode();
     }
-
-    public Object getPreferences() {
-        return preferences;
-    }
-
-    public void setPreferences(Object preferences) {
-        this.preferences = preferences;
-    }
-*/
     
     @Override
     public String toString(){
@@ -109,7 +112,6 @@ public class User {
             try {
                 s.append( f.get(this) );
             } catch (Exception ex) {
-                //Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
             } 
         }
         s.append("}");

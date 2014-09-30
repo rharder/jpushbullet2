@@ -1,9 +1,5 @@
 package net.iharder.jpushbullet2;
 
-//import org.apache.commons.lang3.builder.CompareToBuilder;
-//import org.apache.commons.lang3.builder.EqualsBuilder;
-//import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.lang.reflect.Field;
 
 
@@ -14,9 +10,10 @@ import java.lang.reflect.Field;
  * Push implements Java's Comparable interface and sort such that newer 
  * pushes will be at the beginning of a list. This is in keeping with 
  * Pushbullet.com's policy of sending pushes newest first.
+ *
  * @author Robert.Harder
  */
-public class Push implements Comparable<Push> {
+public final class Push implements Comparable<Push> {
     
     
     private String iden;
@@ -114,11 +111,8 @@ public class Push implements Comparable<Push> {
      */
     @Override
     public int compareTo(Push o) {
-        return Double.compare(this.modified, o.modified);
-        //Push other = (Push) o;
-        //return new CompareToBuilder()
-        //    .append(this.modified, o.modified)
-        //    .toComparison();
+        return Double.compare(o.getModified(),this.getModified()); // Newest first
+        //return Double.compare(this.getModified(),o.getModified()); // Oldest first
     }
 
     @Override
@@ -141,15 +135,10 @@ public class Push implements Comparable<Push> {
 
         Push rhs = (Push) obj;
         return this.iden.equals(rhs.iden);
-        //return new EqualsBuilder()
-        //        .appendSuper(super.equals(obj))
-        //        .append(modified, rhs.modified)
-        //        .isEquals();
     }
 
     @Override
     public int hashCode() {
-        //return new HashCodeBuilder(17, 37).append(modified).toHashCode();
         return this.iden == null ? super.hashCode() : this.iden.hashCode();
     }
 
@@ -163,7 +152,6 @@ public class Push implements Comparable<Push> {
             try {
                 s.append( f.get(this) );
             } catch (Exception ex) {
-                //Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
             } 
         }
         s.append("}");
