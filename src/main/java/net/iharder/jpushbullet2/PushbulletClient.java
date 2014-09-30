@@ -1229,12 +1229,10 @@ public class PushbulletClient{
                     // and we want the associated Future object to have
                     // knowledge of it, we still need to call the user's
                     // Callback<T> method.  This is why we have a method
-                    // call and return within a finally block.
-                    // Not sure how to suppress the warning in various
-                    // Java styling tools.
+                    // call within a finally block but the return outside.
                     callback.completed(response, exc);
-                    return response;
                 }
+                return response;
             }
         });
     }   // end doAsync
