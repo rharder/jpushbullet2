@@ -87,6 +87,11 @@
         </site>
     </distributionManagement>
 
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>https://tandogan.ci.cloudbees.com/job/${project.artifactId}/</url>
+    </ciManagement>
+
     <dependencies>
 
         <dependency>
