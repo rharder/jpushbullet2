@@ -9,6 +9,10 @@ Status
 ======
 [![Dependency Status](https://www.versioneye.com/user/projects/5422649677825ce6db0001c8/badge.png)](https://www.versioneye.com/user/projects/5422649677825ce6db0001c8)
 
+Maven site(s)
+=============
+* [SNAPSHOT](http://rharder.github.io/jpushbullet2/site/0.3.0-SNAPSHOT/)
+
 A Note About Public Domain
 ==========================
 
