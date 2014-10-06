@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project
+    name="${project.name}"
+    xmlns="http://maven.apache.org/DECORATION/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd"
+>
+
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>${fluido-skin.version}</version>
+    </skin>
+
+    <custom>
+        <fluidoSkin>
+            <sideBarEnabled>true</sideBarEnabled>
+            <googlePlusOne />
+            <gitHub>
+                <projectId>rharder/${project.artifactId}</projectId>
+                <ribbonOrientation>right</ribbonOrientation>
+                <ribbonColor>gray</ribbonColor>
+            </gitHub>
+        </fluidoSkin>
+    </custom>
+
+    <body>
+        <!--
+        <menu name="Overview">
+            <item name="Github Page" href="${project.url}/../.." />
+            <item name="Contributing" href="CONTRIBUTING.html" />
+        </menu>
+        -->
+
+        <menu ref="reports" />
+        <menu ref="parent" />
+        <menu ref="modules"/>
+
+    </body>
+</project>
