@@ -23,9 +23,11 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
+        <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
         <maven-dependency-plugin.version>2.9</maven-dependency-plugin.version>
         <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>2.5</maven-jar-plugin.version>
+        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
         <maven-source-plugin.version>2.3</maven-source-plugin.version>
         <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
         <maven-site-plugin.version>3.4</maven-site-plugin.version>
@@ -190,6 +192,55 @@
             </plugin>
 
             <!-- Site build -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-markdown-files</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>pre-site</phase>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/src/site/markdown</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>.</directory>
+                                    <includes>
+                                        <includes>*.md</includes>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <!-- Configuration needs to be at plugin level -->
+                <!-- http://stackoverflow.com/a/19065241 -->
+                <configuration>
+                    <target name="move-readme-file">
+                        <move file="src/site/markdown/README.md" toFile="src/site/markdown/index.md" />
+                    </target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>move-readme-file</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
