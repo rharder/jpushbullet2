@@ -87,6 +87,11 @@
         </site>
     </distributionManagement>
 
+    <issueManagement>
+        <system>Git</system>
+        <url>https://github.com/rharder/${project.artifactId}/issues</url>
+    </issueManagement>
+
     <ciManagement>
         <system>Jenkins</system>
         <url>https://tandogan.ci.cloudbees.com/job/${project.artifactId}/</url>
