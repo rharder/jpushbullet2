@@ -8,7 +8,7 @@ This is a Public Domain Java library for interacting with the Pushbullet service
 Status
 ======
 [![Dependency Status](https://www.versioneye.com/user/projects/5422649677825ce6db0001c8/badge.png)](https://www.versioneye.com/user/projects/5422649677825ce6db0001c8)
-[![Build Status](https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/pushbullet-plugin)](https://tandogan.ci.cloudbees.com/job/plugins/job/jpushbullet2/)
+[![Build Status](https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/pushbullet-plugin)](https://tandogan.ci.cloudbees.com/job/jpushbullet2/)
 
 Maven site(s)
 =============
