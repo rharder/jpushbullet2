@@ -15,6 +15,10 @@
         <pathelement location="${src.dir}"/>
         <path refid="external.jars" />
     </path>
+    <path id="executable.classpath">
+        <pathelement location="${classes.dir}" />
+        <path refid="external.jars" />
+    </path>
 
     <target name="clean">
         <delete dir="${build.dir}"/>
@@ -89,6 +93,18 @@
           <zipfileset dir="${deploy.dir}" prefix="${deploy.dir}"/>
         </zip>
     </target>
+    
+    <!-- Try running some examples -->
+    <!--target name="run" depends="compile">
+        <input message="Enter Pushbullet API key: " addproperty="api.key" />
+        <echo message="Key: [${api.key}]${line.separator}" />
+      <java
+        classname="examples.Examples$GetPushesPaged"
+        classpathref="executable.classpath">
+        <arg value="${api.key}" />
+        <arg value="1" />
+      </java>
+    </target-->
     
     <target name="clean-build" depends="clean,compile" />
     
