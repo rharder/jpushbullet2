@@ -78,8 +78,12 @@ public class Examples {
             if( args.length < 1 ){
                 System.out.println("Arguments: API_KEY");
             } else {
+                int limit = 0;
+                if( args.length >= 2 ){
+                    limit = Integer.parseInt(args[1]);
+                }
                 PushbulletClient client = new PushbulletClient( args[0] );
-                List<Push> pushes = client.getPushes();
+                List<Push> pushes = client.getPushes(limit);
                 System.out.println( "Number of pushes: " + pushes.size() );
             }
         }   // end main
