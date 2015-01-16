@@ -25,8 +25,10 @@ import net.iharder.jpushbullet2.PushbulletEvent;
 import net.iharder.jpushbullet2.PushbulletException;
 import net.iharder.jpushbullet2.PushbulletListener;
 import net.iharder.jpushbullet2.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -34,7 +36,8 @@ import org.slf4j.LoggerFactory;
  */
 public class MainTrial1 extends javax.swing.JFrame implements PropertyChangeListener, PushbulletListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainTrial1.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(MainTrial1.class);
+    private final Log LOGGER = LogFactory.getLog(getClass());
 
     private PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
     private PushbulletClient pbClient;

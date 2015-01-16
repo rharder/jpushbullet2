@@ -187,7 +187,7 @@ public class Examples {
     
     public static class StartStopWebservice {
         public static void main(String[] args) throws PushbulletException, InterruptedException{
-            //args = new String[]{""};
+            args = new String[]{"v1WadrAI7e0zaEefOs3dVqnXtyRxWRSuZdujzlLkPSZgq"};
             if( args.length < 1 ){
                 System.out.println("Arguments: API_KEY ");
             } else {

@@ -2,8 +2,6 @@
 package net.iharder.jpushbullet2;
 
 import java.lang.reflect.Field;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Represents a user as decoded from the json data from Pushbullet.

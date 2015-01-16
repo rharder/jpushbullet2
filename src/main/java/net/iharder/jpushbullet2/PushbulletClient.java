@@ -30,6 +30,8 @@ import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -46,8 +48,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  * Access the Pushbullet (version 2) API including receiving updates
@@ -69,7 +71,8 @@ import org.slf4j.LoggerFactory;
  */
 public class PushbulletClient{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PushbulletClient.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(PushbulletClient.class);
+    private final Log LOGGER = LogFactory.getLog(getClass());
 
     /**
      * User's Pushbullet key, until I can figure out OAuth.
@@ -239,12 +242,16 @@ public class PushbulletClient{
                 } // end onOpen
                 @Override
                 public void onClose(Session session, CloseReason closeReason){
-                    LOGGER.info("Websocket session closed: {0}", closeReason.getReasonPhrase());
+                    if( LOGGER.isInfoEnabled() ){
+                        LOGGER.info("Websocket session closed: " + closeReason.getReasonPhrase());
+                    }
                     // Timer will detect and correct
                 }   // end onClose
                 @Override
                 public void onError(Session session, Throwable thr){
-                    LOGGER.info("Websocket session error: {0}", thr.getLocalizedMessage());
+                    if( LOGGER.isInfoEnabled() ){
+                        LOGGER.info("Websocket session error: " + thr.getLocalizedMessage(), thr);
+                    }
                 }   // end onClose
             }, websocketClientEndpointConfig, new URI(WEBSOCKET_URL + "/" + apiKey));
             // SUCCESS!
@@ -1042,7 +1049,9 @@ public class PushbulletClient{
           nameValuePairs.add(new BasicNameValuePair( "file_name", file.getName() ));
           nameValuePairs.add(new BasicNameValuePair( "file_type", mime == null ? "application/octet-stream" : mime ) );
         UploadRequest upReq = JsonHelper.fromJson(doHttpPost( API_UPLOAD_REQUEST_URL, nameValuePairs ), UploadRequest.class);
-        LOGGER.debug("File will be available at {0}", upReq.file_url);
+        if( LOGGER.isDebugEnabled() ){
+            LOGGER.debug("File will be available at " + upReq.file_url);
+        }
         
         //
         // S T E P   2 :   U P L O A D   F I L E
