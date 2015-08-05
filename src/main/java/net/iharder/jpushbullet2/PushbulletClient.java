@@ -851,6 +851,36 @@ public class PushbulletClient{
         return doHttpPost( API_PUSHES_URL, nameValuePairs );
     }
     
+    /**
+     * Send a note with custom source device identification code
+     * 
+     * 
+     * <pre><code>
+     * PushbulletClient pbClient = new PushbulletClient("AFC1334...API Key...958DF");
+     * try{
+     *     pbClient.sendNote( "A34...device iden...98C", "My Title", "My Body" );
+     * } catch( PushbulletException e ){
+     *     // Would indicate a problem
+     * }
+     * </code></pre>
+     * 
+     * @param iden  The target device identification code
+     * @param title Title of the note
+     * @param body  Body text of the note
+     * @param source_iden The source device identification code
+     * @return resulting json from the api
+     * @throws PushbulletException  if there is a communication or other error
+     */
+    public String sendNote(String iden, String title, String body, String source_iden) throws PushbulletException{
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
+          nameValuePairs.add(new BasicNameValuePair("type", "note"));
+          nameValuePairs.add(new BasicNameValuePair("device_iden", iden));
+          nameValuePairs.add(new BasicNameValuePair("title", title));
+          nameValuePairs.add(new BasicNameValuePair("body", body));
+          nameValuePairs.add(new BasicNameValuePair("source_device_iden", source_iden));
+        return doHttpPost( API_PUSHES_URL, nameValuePairs );
+    }
+    
     
     /**
      * Sends a note to the specified Pushbullet device on a separate thread.
@@ -1071,6 +1101,65 @@ public class PushbulletClient{
         //
         List<NameValuePair> pairs2 = new LinkedList<NameValuePair>();
           pairs2.add( new BasicNameValuePair( "device_iden", iden ) );
+          pairs2.add( new BasicNameValuePair( "type", "file" ) );
+          pairs2.add( new BasicNameValuePair( "file_name", upReq.file_name ) );
+          pairs2.add( new BasicNameValuePair( "file_type", upReq.file_type ) );
+          pairs2.add( new BasicNameValuePair( "file_url",  upReq.file_url ) );
+          if( body != null ){
+              pairs2.add( new BasicNameValuePair( "body", body ) );
+          }        
+        return doHttpPost(API_PUSHES_URL, pairs2 );
+    }
+    
+    /**
+     * Sends a file to the specified Pushbullet device with custom source device identification code
+     * 
+     * @param iden the Pushbullet device
+     * @param file the file to send
+     * @param body optional text to accompany the push
+     * @param source_iden The source device identification code
+     * @return the HTTP response
+     * @throws PushbulletException  if there is a communication or other error
+     */
+    public String sendFile(String iden, File file, String body, String source_iden) throws PushbulletException{
+        if(file.length() >= 26214400){
+            String errMsg = "The file you are trying to upload is too big. File: " + file.getName() + " Size: " + file.length();
+            LOGGER.warn(errMsg);
+            throw new PushbulletException(errMsg);
+        }
+        
+        //
+        // S T E P   1 :   R E Q U E S T   U P L O A D
+        //
+        MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap(); // Get MIME type of file 
+        String mime = mimeTypesMap.getContentType(file);                // I suspect Java is pretty bad here
+        List<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
+          nameValuePairs.add(new BasicNameValuePair( "file_name", file.getName() ));
+          nameValuePairs.add(new BasicNameValuePair( "file_type", mime == null ? "application/octet-stream" : mime ) );
+        UploadRequest upReq = JsonHelper.fromJson(doHttpPost( API_UPLOAD_REQUEST_URL, nameValuePairs ), UploadRequest.class);
+        if( LOGGER.isDebugEnabled() ){
+            LOGGER.debug("File will be available at " + upReq.file_url);
+        }
+        
+        //
+        // S T E P   2 :   U P L O A D   F I L E
+        //
+        // Build upload connection
+        // Transfer all of the "data" elements from Pushbullet's response
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        for (Map.Entry<String, String> entry : upReq.data.entrySet()) {
+            builder.addTextBody( entry.getKey(), entry.getValue() );
+        }
+        builder.addBinaryBody("file", file); // Actual file contents
+        String uploadResult = doHttpPost( upReq.upload_url, builder ); // Expect result to be empty
+        
+        
+        //
+        // S T E P   3 :   P U S H   N E W S   O F   T H E   F I L E
+        //
+        List<NameValuePair> pairs2 = new LinkedList<NameValuePair>();
+          pairs2.add( new BasicNameValuePair( "device_iden", iden ) );
+          pairs2.add( new BasicNameValuePair( "source_device_iden", iden ) );
           pairs2.add( new BasicNameValuePair( "type", "file" ) );
           pairs2.add( new BasicNameValuePair( "file_name", upReq.file_name ) );
           pairs2.add( new BasicNameValuePair( "file_type", upReq.file_type ) );
