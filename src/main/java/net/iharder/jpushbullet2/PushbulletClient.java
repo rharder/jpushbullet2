@@ -1159,7 +1159,7 @@ public class PushbulletClient{
         //
         List<NameValuePair> pairs2 = new LinkedList<NameValuePair>();
           pairs2.add( new BasicNameValuePair( "device_iden", iden ) );
-          pairs2.add( new BasicNameValuePair( "source_device_iden", iden ) );
+          pairs2.add( new BasicNameValuePair( "source_device_iden", source_iden ) );
           pairs2.add( new BasicNameValuePair( "type", "file" ) );
           pairs2.add( new BasicNameValuePair( "file_name", upReq.file_name ) );
           pairs2.add( new BasicNameValuePair( "file_type", upReq.file_type ) );
