@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -1371,12 +1372,7 @@ public class PushbulletClient {
      */
     protected String doHttpPost(String url, List<NameValuePair> nameValuePairs) throws PushbulletException {
         HttpPost post = new HttpPost(url);
-        try {
-            post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-        } catch (UnsupportedEncodingException ex) {
-            LOGGER.error("", ex);
-            throw new PushbulletException(ex);
-        }
+        post.setEntity(new UrlEncodedFormEntity(nameValuePairs, Charset.defaultCharset()));
         return doHttp(post);
     }
 
