@@ -12,7 +12,8 @@ Status
 
 Maven site(s)
 =============
-* [SNAPSHOT](https://rharder.github.io/jpushbullet2/site/0.3.0-SNAPSHOT/)
+* [0.3.0](https://rharder.github.io/jpushbullet2/site/0.3.0/)
+* [SNAPSHOT](https://rharder.github.io/jpushbullet2/site/0.4.0-SNAPSHOT/)
 
 A Note About Public Domain
 ==========================
