@@ -3,6 +3,8 @@ package examples;
 
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.iharder.jpushbullet2.*;
 /**
  *
@@ -10,10 +12,14 @@ import net.iharder.jpushbullet2.*;
  */
 public class Examples {
     
+    private final static String API_KEY = null;
     
     public static class GetDevices {
         public static void main(String[] args) throws PushbulletException{
             //args = new String[]{""};
+            if( args.length < 1 && API_KEY != null ){
+                args = new String[]{ API_KEY };
+            }
             if( args.length < 1 ){
                 System.out.println("Arguments: API_KEY");
             } else {
@@ -75,6 +81,9 @@ public class Examples {
     public static class GetPushes {
         public static void main(String[] args) throws PushbulletException{
             //args = new String[]{""};
+            if( args.length < 1 && API_KEY != null ){
+                args = new String[]{ API_KEY, "10"};
+            }
             if( args.length < 1 ){
                 System.out.println("Arguments: API_KEY");
             } else {
@@ -85,6 +94,9 @@ public class Examples {
                 PushbulletClient client = new PushbulletClient( args[0] );
                 List<Push> pushes = client.getPushes(limit);
                 System.out.println( "Number of pushes: " + pushes.size() );
+                for( Push p : pushes ){
+                    System.out.println(p);
+                }
             }
         }   // end main
     }   // end Devices
@@ -139,6 +151,7 @@ public class Examples {
     
     public static class SendNote {
         public static void main(String[] args) throws PushbulletException{
+            args= new String[]{ API_KEY, "ujzlLkPSZgqdjAAgkMOBYy", "my title", "foo6" };
             if( args.length < 4 ){
                 System.out.println("Arguments: API_KEY destDevIden title body");
             } else {
@@ -148,6 +161,46 @@ public class Examples {
             }
         }   // end main
     }   // end Note
+    
+    
+    
+    public static class SendManyThreadedNotes {
+        public static void main(String[] args) throws PushbulletException, InterruptedException{
+            args = new String[]{"v1WadrAI7e0zaEefOs3dVqnXtyRxWRSuZdujzlLkPSZgq"};
+            if( args.length < 1 ){
+                System.out.println("Arguments: API_KEY");
+            } else {
+                final PushbulletClient client = new PushbulletClient( args[0] );
+                
+                for( int i = 0; i < 5; i++ ){
+                    final int I = i;
+                    Thread t = new Thread( new Runnable(){
+                        @Override
+                        public void run() {
+                            for( int j = 0; j < 5; j++ ){
+                                try {
+                                    Thread.sleep((long) (Math.random()*10));
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Examples.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                String iden = "ujzlLkPSZgqsjAAkU0oATI";
+                                String title = Thread.currentThread().getName();
+                                String body = "Message Number " + j;
+                                Callback callback = null;
+                                System.out.println( title + ", " + body );
+                                client.sendNoteAsync(iden, title, body, callback);
+                            }
+                        }
+                    }, "Thread-"+i );
+                    t.setDaemon(false);
+                    t.start();
+                }
+                
+            }
+            Thread.sleep(10000);
+        }   // end main
+    }   // end Note
+    
     
     
     public static class SendNoteAsync {
