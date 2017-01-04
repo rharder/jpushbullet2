@@ -1196,6 +1196,7 @@ public class PushbulletClient{
         // First check for error
         PushbulletError err = JsonHelper.fromJson(result.toString(), PushbulletError.class);
         if( err != null && err.error != null ){
+            LOGGER.error("Pushbullet error in result: " + result);
             throw new PushbulletException( err.error.message);
         }
         
@@ -1232,14 +1233,16 @@ public class PushbulletClient{
                     response = callable.call();
                 } catch (Exception ex) {
                     exc = new PushbulletException(ex);
-                    throw exc;
+                    //throw exc;
                 } finally {
                     // Although the Callable<T> may throw an exception,
                     // and we want the associated Future object to have
                     // knowledge of it, we still need to call the user's
                     // Callback<T> method.  This is why we have a method
                     // call within a finally block but the return outside.
-                    callback.completed(response, exc);
+                    if( callback != null ){
+                        callback.completed(response, exc);
+                    }
                 }
                 return response;
             }
@@ -1265,11 +1268,16 @@ public class PushbulletClient{
                         } else {
                             LOGGER.info("Timer discovered that websocket was closed. Attempting to reopen...");
                             initWebsocket();
+                            if( LOGGER.isInfoEnabled() ){
+                                LOGGER.info("Websocket opened: " + ( websocketSession == null ? "null" : websocketSession.isOpen() ) );
+                            }
                         }
                     } catch (IOException ex) {
                         LOGGER.warn(ex.getMessage());
+                        ex.printStackTrace();
                     }  catch (IllegalStateException ex) {
                         LOGGER.warn(ex.getMessage());
+                        ex.printStackTrace();
                     } finally {
                         checkPulse.schedule(new KeepAliveTask(), websocketPulseInterval); // If startWebsocket fails, try again later
                     }
