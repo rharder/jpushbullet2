@@ -1418,14 +1418,9 @@ public class PushbulletClient {
 
         // First check for error
         PushbulletError err = JsonHelper.fromJson(result.toString(), PushbulletError.class);
-<<<<<<< HEAD
         if( err != null && err.error != null ){
             LOGGER.error("Pushbullet error in result: " + result);
             throw new PushbulletException( err.error.message);
-=======
-        if (err != null && err.error != null) {
-            throw new PushbulletException(err.error.message);
->>>>>>> 54492c15f9a16920a3926c67bebe461292b4382b
         }
 
         return result.toString();
@@ -1497,13 +1492,6 @@ public class PushbulletClient {
                             }
                         }
                     } catch (IOException ex) {
-                        LOGGER.warn(ex.getMessage());
-<<<<<<< HEAD
-                        ex.printStackTrace();
-                    }  catch (IllegalStateException ex) {
-=======
-                    } catch (IllegalStateException ex) {
->>>>>>> 54492c15f9a16920a3926c67bebe461292b4382b
                         LOGGER.warn(ex.getMessage());
                         ex.printStackTrace();
                     } finally {
